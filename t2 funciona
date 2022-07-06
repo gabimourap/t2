@@ -105,7 +105,7 @@ int main()
     int continuar=1;
 
     registro palavrasCruzadas[4]; //instanciar o struct registro
-    int i, j, r=0, l, c;
+    int i, j, r=0, l, c, escolha;
     int contador = 1;
 
 
@@ -132,7 +132,9 @@ int main()
             case 1:
 
             	//lerDados(palavrasCruzadas);
-            	for (i = 0; i < 4; i++){
+            	printf("Quantas palavras deseja utilizar?\n");
+            	scanf("%i", &escolha);
+            	for (i = 0; i < escolha; i++){
 
             	palavrasCruzadas[i] = lerDados(contador);
 				contador = contador +1; //Incrementa 1 no número de perguntas e respostas na variável np
@@ -143,7 +145,7 @@ int main()
 
             case 2:
             	printf("vamos jogar?\n");
-                for(i=0; i<2; i++){
+                for(i=0; i< escolha; i++){
             		jogar(palavrasCruzadas[i]);
 				    }
 				    printf("\n");
