@@ -10,9 +10,6 @@ typedef struct{
 	int posicao;
 	int linha;
 	int coluna;
-    int lines;
-    int colunes;
-
 } registro;
 
 //Função para ler Dados
@@ -85,27 +82,12 @@ void jogar(registro r)
 
 void imprimirDados(registro r)
 {
-    int i, j, l, c;
-    l = r.lines;
-    c = r.colunes;
-    char p[l][c];
 
     printf("\n\t Pergunta: %s", r.pergunta);
     printf("\n\t Resposta: %s", r.resposta);
     printf("\n\t Posicao: %c", r.posicao);
     printf("\n\t Linha: %i", r.linha);
     printf("\n\t Coluna: %i", r.coluna);
-    printf("\n\t Linhas matriz: %i", r.lines);
-    printf("\n\t Colunas matriz: %i", r.colunes);
-
-    for (i=0; i<=l; i++){
-        for(j=0;j<=c; j++){
-            p[i][j]='_';
-            printf("%c", p[i][j]);
-        }
-        printf("\n");
-    }
-
 
 }
 
@@ -122,19 +104,11 @@ int main()
     int continuar=1;
 
     registro palavrasCruzadas[4]; //instanciar o struct registro
-    int i, j, l, c, escolha;
+    int i, j, escolha;
     int contador = 1;
     registro r;
+    char p[20][40];
 
-    printf("insira o número de linhas da sua matriz por favor\n");
-    scanf("%i", &l);
-    r.lines = l;
-    printf("insira o número de colunas da sua matriz por favor\n");
-    scanf("%i", &c);
-    r.colunes = c;
-
-
-    char p[l][c];
     do
     {
     	printf("\n");
@@ -170,8 +144,8 @@ int main()
             		jogar(palavrasCruzadas[i]);
 				    }
 				    printf("\n");
-                for(i=0; i<=l; i++){
-                    for(j=0;j<=c;j++){
+                for(i=0; i<=20; i++){
+                    for(j=0;j<=40;j++){
                         p[i][j]='_';
                         printf("%c ", p[i][j]);
                     }
@@ -190,6 +164,13 @@ int main()
             		imprimirDados(palavrasCruzadas[i]);
 				    }
 				    printf("\n");
+                for(i=0; i<=20; i++){
+                    for(j=0;j<=40;j++){
+                        p[i][j]='_';
+                        printf("%c ", p[i][j]);
+                    }
+                    printf("\n");
+                }
 
 
                 break;
