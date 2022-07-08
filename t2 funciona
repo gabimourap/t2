@@ -4,52 +4,54 @@
 #include <locale.h>
 #include <string.h>
 
+char p[10][20]; 
+
+
 typedef struct{
-	char pergunta [100];
-	char resposta [100];
+	char pergunta [100]; //define número máximo de caracteres da pergunta
+	char resposta [100]; //define número máximo de caracteres da resposta
 	int posicao;
-} registro;
+	int linha;
+	int coluna;
+} registro; //nome da struct
 
 //Função para ler Dados
 registro lerDados(int contador){
-    int np = contador;
+    int np = contador; //utilizado para incrementar o número das perguntas e respostas
 	char opcao;
-	char letra;
+	int ophv;
 	registro r;
+	int linha, coluna;
 
-	while(opcao != 27) //27 corresponde ao ESC para sair
+
+
+	while(opcao != 27) 
 	{
 		printf("Informe a pergunta %d:\n ", np);
-		fflush(stdin);
+		fflush(stdin); //permite que a pergunta tenha espaço entre as palavras
 		gets (r.pergunta);
 
 		printf("Informe a resposta %d:\n ", np);
 		fflush(stdin);
 		gets (r.resposta);
 
-		//Realiza a validação da posição. A letra deve ser H ou V senão entra no laço de repetição até que digite a letra correta
+		//Realiza a validação da posição. 
 		do{
-			printf("Informe a posição da resposta %d %c: (V - Vertical ou H - Horizontal) ", np);
-			scanf("%s",&letra);
-		}while(letra !='V'&& letra !='v'&& letra !='h'&& letra !='H');
+			printf("Informe a posição da resposta %d %c: (1 - Vertical ou 2 - Horizontal)\n ", np);
+			scanf("%i",&ophv); 
 
-		r.posicao = letra;
-
-		printf("\n Pressione <ESC> para sair ou <Enter> para continuar :\n \n");
-
-		opcao=getch();    //Faz a leitura da opção digitada
-
-		if(opcao == 27)
-		{
-			if(np<2) //o número de perguntas digitadas não pode ser menor que dois
-			{
-			    printf("Numero mínimo de perguntas deve ser maior que 1! \n \n");
-				opcao = 0;
-		    }
-			else
-		    {
+			if(ophv != 1 && ophv != 2){
+                printf("\n Valor nao encontrado, tente novamente \n"); //caso o valor digitado não corresponda ao esperado
 			}
-		}
+		}while(ophv != 1 && ophv != 2);
+
+		r.posicao = ophv;
+		printf("Insira a linha da primeira letra\n"); 
+		scanf("%i", &linha);
+		r.linha = linha-1;
+		printf("Insira a coluna da primeira letra\n");
+		scanf("%i", &coluna);
+		r.coluna = coluna-1;
 
 		return r;
 	}
@@ -58,39 +60,57 @@ registro lerDados(int contador){
 
 
 
-void jogar(registro r)
+void jogar(registro r) //função que permite jogar
 {
-	char respostaJogador[40];
+	char respostaJogador[40]; 
 	char respostaTeste[40];
-	int result = 2;
+    int result = 2;
+
+	int posicao;
+	int linha;
+	int coluna;
 
 	do{
-		printf("\nPergunta: %s", r.pergunta);
+		//printa as perguntas e a orientação da palavra e permite que o jogador responda
+		printf("\nPergunta: %s", r.pergunta); 
+		printf("\nPosição: %i", r.posicao);
 	    printf("\nInforme a resposta:\n ");
-	    scanf("%s" ,&respostaJogador);
+	    scanf("%s" ,&respostaJogador); // lê a resposta do jogador
 
 	    // strcmp:função que retorna 0 se as strings forem iguais
 		result = strcmp(respostaJogador, r.resposta);
 
-	    if(result != 0)
+	    if(result != 0){ //caso a resposta esteja errada
 		printf("\nResposta incorreta. Tente novamente!!");
-		else
-		printf("\nResposta correta!");
+		}else{
+		printf("\nResposta correta!");}
 
 	}
-	while(result !=  0);
+	while(result !=  0); 
 
-    //if(result == 0)
-	//printf("\n Resposta Correta!!! %s", r.resposta);
+    int aux=0;
+    int i=0;
+    int j=0;
+    int a=0;
+
+    if (r.posicao == 1){ //coloca as palavras verticais na matriz
+        j = r.coluna;
+        aux = strlen(r.resposta);
+        for(a=0 , i=r.linha;a<aux;a++ , i++){
+            p[i][j]=r.resposta[a];
+        }
+    }
+
+    if (r.posicao == 2){ //coloca as palavras horizontais na matriz
+        i = r.linha;
+        aux = strlen(r.resposta);
+        for(a=0 , j=r.coluna;a<aux ;a++ , j++){
+            p[i][j]=r.resposta[a];
+        }
+    }
+
 }
 
-
-void imprimirDados(registro r)
-{
-    printf("\n\t Pergunta: %s", r.pergunta);
-    printf("\n\t Resposta: %s", r.resposta);
-    printf("\n\t Posicao: %c", r.posicao);
-}
 
 void sair()
 {
@@ -105,33 +125,31 @@ int main()
     int continuar=1;
 
     registro palavrasCruzadas[4]; //instanciar o struct registro
-    int i, j, r=0, l, c, escolha;
-    int contador = 1;
+    int i, j, escolha; 
+    int contador = 1; 
+    registro r;
+    for(i=0; i<20; i++){
+        for(j=0; j<40; j++){
+             p[i][j]='_';
+        }
+    }
 
-
-    printf("insira o número de linhas da sua matriz por favor\n");
-    scanf("%i", &l);
-    printf("insira o número de colunas da sua matriz por favor\n");
-    scanf("%i", &c);
-
-    char p[l][c];
     do
-    {
+    {	//menu inicial do jogo
     	printf("\n");
         printf("\n\tBem vindo ao Jogo Palavras Cruzadas\n\n");
         printf(" 1. Inserir Perguntas e respostas\n");
         printf(" 2. Jogar\n");
-        printf(" 3. Imprimir\n");
-        printf(" 4. Fechar o programa\n");
+        printf(" 3. Fechar o programa\n");
 
         scanf("%d", &continuar);
-        system("cls || clear");
+        system("cls || clear"); 
 
         switch(continuar)
         {
             case 1:
 
-            	//lerDados(palavrasCruzadas);
+                //utiliza a função lerDados
             	printf("Quantas palavras deseja utilizar?\n");
             	scanf("%i", &escolha);
             	for (i = 0; i < escolha; i++){
@@ -140,18 +158,19 @@ int main()
 				contador = contador +1; //Incrementa 1 no número de perguntas e respostas na variável np
 				}
 
+                system("cls");
 
                 break;
 
-            case 2:
+            case 2: //utiliza a função jogar
             	printf("vamos jogar?\n");
                 for(i=0; i< escolha; i++){
             		jogar(palavrasCruzadas[i]);
 				    }
 				    printf("\n");
-                for(i=0; i<=l; i++){
-                    for(j=0;j<=c;j++){
-                        p[i][j]='_';
+                for(i=0; i<=10; i++){
+                    for(j=0;j<=20;j++){
+
                         printf("%c ", p[i][j]);
                     }
                     printf("\n");
@@ -163,23 +182,9 @@ int main()
 
                 break;
 
+    
+
             case 3:
-            	printf("\n\t Imprimindo dados palavras cruzadas\n");
-                for(i=0; i<2; i++){
-            		imprimirDados(palavrasCruzadas[i]);
-				    }
-				    printf("\n");
-                for(i=0; i<=l; i++){
-                    for(j=0;j<=c;j++){
-                        p[i][j]='_';
-                        printf("%c ", p[i][j]);
-                    }
-                    printf("\n");
-                }
-
-                break;
-
-            case 4:
                 sair();
                 break;
 
